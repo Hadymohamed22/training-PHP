@@ -4,11 +4,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (isset($_POST["remember_me"])) {
         setcookie("username", $_POST['username'], time() + 86400 * 7);
     }
+    $_SESSION["username"] = $_POST['username'];
+    $_SESSION["password"] = $_POST["password"];
+    $_SESSION["remember_me"] = $_POST["remember_me"] ?? null;
     if ($_POST['username'] === "admin" && $_POST["password"] === "1234") {
-        $_SESSION["username"] = $_POST['username'];
-        $_SESSION["password"] = $_POST["password"];
-        $_SESSION["remember_me"] = $_POST["remember_me"];
         header("location: dashboard.php");
+        exit;
+    } else {
+        header("location: index.php");
+        exit;
     }
 }
 ?>
@@ -22,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 </head>
 
 <body>
-    <form method="post">
+    <form action="<?= htmlspecialchars($_SERVER["PHP_SELF"]) ?>" method="post">
         <label for="username">Username: </label>
         <br />
         <input type="text" name="username" id="username" />
@@ -30,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <br />
         <label for="password">Password: </label>
         <br />
-        <input type="text" name="password" id="password" />
+        <input type="password" name="password" id="password" />
         <br />
         <br />
         <input type="checkbox" name="remember_me" value="remember_me" /> remember me
